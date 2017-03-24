@@ -3,6 +3,7 @@
   ;; Domains
   {:db/ident :epistomic/domain
    :db/valueType :db.type/ref
+   :db/cardinality :db.cardinality/one
    :db/doc "An epistomic domain"}
 
   ;; Classes
@@ -10,7 +11,7 @@
    :db/valueType :db.type/ref
    :db/cardinality :db.cardinality/one
    :db/doc "Class this belongs to"}
-  {:db/ident :epistomic.type/attribute
+  {:db/ident :epistomic/attribute
    :db/valueType :db.type/ref
    :db/cardinality :db.cardinality/many
    :db/doc "Attribute allowed in this class"}
@@ -22,38 +23,42 @@
   ;; Built-in classes
   {:db/ident :epistomic/entity
    :db/doc "An entity in your domain"
-   :epistomic/_class :epistomic/object}
+   :epistomic/class :epistomic/object}
   {:db/ident :epistomic/predicate
    :db/doc "An RDF style predicate in your doman"
-   :epistomic/_class :epistomic/object}
+   :epistomic/class :epistomic/object}
   {:db/ident :epistomic/relation
    :db/doc "An an RDF "
-   :epistomic/_class :epistomic/object}
+   :epistomic/class :epistomic/object}
   {:db/ident :epistomic/source
    :db/doc "A source of evidence"
-   :epistomic/_class :epistomic/object}
+   :epistomic/class :epistomic/object}
   {:db/ident :epistomic/investigation
    :db/doc "An investigation of a source"
-   :epistomic/_class :epistomic/object}
+   :epistomic/class :epistomic/object}
   {:db/ident :epistomic/observation
    :db/doc "An investigation of a source"
-   :epistomic/_class :epistomic/object}
+   :epistomic/class :epistomic/object}
+  {:db/ident :epistomic/evidence
+   :db/doc "Evidence for a proposition"
+   :epistomic/class :epistomic/object}
   {:db/ident :epistomic/belief
-   :db/doc "An current belief in the system"
-   :epistomic/_class :epistomic/object}]
+   :db/doc "Current belief in a proposition"
+   :epistomic/class :epistomic/object}]
 
  [
   ;; Objects
   {:db/ident :epistomic.object/id
    :db/valueType :db.type/uuid
+   :db/cardinality :db.cardinality/many
    :db/unique :db.unique/identity
    :db/doc "An object that is known about"
    :epistomic/_attribute :epistomic/object}
-  {:db/ident :epistomic.object/class
+  {:db/ident :epistomic/class
    :db/valueType :db.type/ref
    :db/doc "The class of the object"
    :epistomic/_attribute :epistomic/relation
-   :epistomic.object/class :db/ident}
+   :epistomic/class :db/ident}
 
   ;; Relations
   {:db/ident :epistomic.relation/predicate
@@ -61,7 +66,7 @@
    :db/cardinality :db.cardinality/many
    :db/doc "Allowed predicates in this relation"
    :epistomic/_attribute :epistomic/relation
-   :epistomic.object/class :epistomic/predicate}
+   :epistomic/class :epistomic/predicate}
 
   ;; Predicates
   {:db/ident :epistomic.predicate/subjectClass
@@ -69,14 +74,14 @@
    :db/cardinality :db.cardinality/one
    :db/doc "Allowed class of the predicate subject"
    :epistomic/_attribute :epistomic/predicate
-   :epistomic.object/class :epistomic/object}
+   :epistomic/class :epistomic/object}
 
   {:db/ident :epistomic.predicate/objectClass
    :db/valueType :db.type/ref
    :db/cardinality :db.cardinality/one
    :db/doc "Allowed class of the predicate object"
    :epistomic/_attribute :epistomic/predicate
-   :epistomic.object/class :epistomic/object}
+   :epistomic/class :epistomic/object}
 
   ;; Investigations
   {:db/ident :epistomic.investigation/source
@@ -84,7 +89,7 @@
    :db/cardinality :db.cardinality/one
    :db/doc "This source of this investigation"
    :epistomic/_attribute :epistomic/investigation
-   :epistomic.object/class :epistomic/source}
+   :epistomic/class :epistomic/source}
   {:db/ident :epistomic.investigation/start
    :db/valueType :db.type/instant
    :db/cardinality :db.cardinality/one
@@ -98,7 +103,7 @@
   {:db/ident :epistomic.investigation/hash
    :db/valueType :db.type/string
    :db/cardinality :db.cardinality/one
-   :db/unique :db.unique/unique
+   :db/unique :db.unique/value
    :db/doc "An opaque value-like hash provided by the source"
    :epistomic/_attribute :epistomic/investigation}
   {:db/ident :epistomic.investigation/observation
@@ -106,7 +111,7 @@
    :db/cardinality :db.cardinality/many
    :db/doc "An observation of this investigation"
    :epistomic/_attribute :epistomic/investigation
-   :epistomic.object/class :epistomic/observation}
+   :epistomic/class :epistomic/observation}
 
   ;; Observations
   {:db/ident :epistomic.observation/path
@@ -127,7 +132,7 @@
   {:db/ident :epistomic.observation/hash
    :db/valueType :db.type/string
    :db/cardinality :db.cardinality/one
-   :db/unique :db.unique/unique
+   :db/unique :db.unique/value
    :db/doc "Cryptographic hash of the observation"
    :epistomic/_attribute :epistomic/observation}
 
@@ -137,13 +142,13 @@
    :db/cardinality :db.cardinality/one
    :db/doc "A causal link between some evidence and another object"
    :epistomic/_attribute :epistomic/evidence
-   :epistomic.object/class :epistomic/observation}
+   :epistomic/class :epistomic/observation}
   {:db/ident :epistomic.evidence/proposition
    :db/valueType :db.type/ref
    :db/cardinality :db.cardinality/one
    :db/doc "A causal link between some evidence and another object"
    :epistomic/_attribute :epistomic/evidence
-   :epistomic.object/class :epistomic/object}
+   :epistomic/class :epistomic/object}
 
   ;; Belief
   {:db/ident :epistomic.belief/support
@@ -151,10 +156,10 @@
    :db/cardinality :db.cardinality/many
    :db/doc "Support for belief in a proposition"
    :epistomic/_attribute :epistomic/belief
-   :epistomic.object/class :epistomic/object}
+   :epistomic/class :epistomic/object}
   {:db/ident :epistomic.belief/proposition
    :db/valueType :db.type/ref
    :db/cardinality :db.cardinality/one
    :db/doc "The proposition believed in"
    :epistomic/_attribute :epistomic/belief
-   :epistomic.object/class :epistomic/object}]]
+   :epistomic/class :epistomic/object}]]
