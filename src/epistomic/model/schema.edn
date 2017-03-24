@@ -1,0 +1,97 @@
+[
+ [
+  ;; Domains
+  {:db/ident :epistomic/domain
+   :db/valueType :db.type/ref
+   :db/doc "An epistomic domain"}
+
+  ;; Classes
+  {:db/ident :epistomic/class
+   :db/valueType :db.type/ref
+   :db/cardinality :db.cardinality/one
+   :db/doc "Class this belongs to"}
+  {:db/ident :epistomic.type/attribute
+   :db/valueType :db.type/ref
+   :db/cardinality :db.cardinality/many
+   :db/doc "Attribute allowed in this class"}
+
+  ;; Root classes
+  {:db/ident :epistomic/object}
+  {:db/ident :epistomic/entity
+   :db/doc "An entity in your domain"
+   :epistomic/_class :epistomic/object}
+  {:db/ident :epistomic/predicate
+   :db/doc "An RDF style predicate in your doman"
+   :epistomic/_class :epistomic/object}
+  {:db/ident :epistomic/relation
+   :db/doc "An an RDF "
+   :epistomic/_class :epistomic/object}
+  {:db/ident :epistomic/source
+   :db/doc "A source of evidence"
+   :epistomic/_class :epistomic/object}
+  {:db/ident :epistomic/investigation
+   :db/doc "An investigation of a source"
+   :epistomic/_class :epistomic/object}
+  {:db/ident :epistomic/observation
+   :db/doc "An investigation of a source"
+   :epistomic/_class :epistomic/object}]
+
+ [
+  ;; Objects
+  {:db/ident :epistomic.object/id
+   :db/valueType :db.type/uuid
+   :db/unique :db.unique/identity
+   :db/doc "An object that is known about"
+   :epistomic/_attribute :epistomic/object}
+  {:db/ident :epistomic.object/class
+   :db/valueType :db.type/ref
+   :db/doc "The class of the object"
+   :epistomic/_attribute :epistomic/relation
+   :epistomic.object/class :db/ident}
+
+  ;; Relations
+  {:db/ident :epistomic.relation/predicate
+   :db/valueType :db.type/ref
+   :db/cardinality :db.cardinality/many
+   :db/doc "Allowed predicates in this relation"
+   :epistomic/_attribute :epistomic/relation
+   :epistomic.object/class :epistomic/predicate}
+
+  ;; Predicates
+  {:db/ident :epistomic.predicate/subjectClass
+   :db/valueType :db.type/ref
+   :db/cardinality :db.cardinality/one
+   :db/doc "Allowed class of the predicate subject"
+   :epistomic/_attribute :epistomic/predicate
+   :epistomic.object/class :epistomic/object}
+
+  {:db/ident :epistomic.predicate/objectClass
+   :db/valueType :db.type/ref
+   :db/cardinality :db.cardinality/one
+   :db/doc "Allowed class of the predicate object"
+   :epistomic/_attribute :epistomic/predicate
+   :epistomic.object/class :epistomic/object}
+
+  ;; Investigations
+  {:db/ident :epistomic.investigation/source
+   :db/valueType :db.type/ref
+   :db/cardinality :db.cardinality/one
+   :db/doc "This source of this investigation"
+   :epistomic/_attribute :epistomic/investigation
+   :epistomic.object/class :epistomic/source}
+  {:db/ident :epistomic.investigation/start
+   :db/valueType :db.type/instant
+   :db/cardinality :db.cardinality/one
+   :db/doc "When the investigation started"
+   :epistomic/_attribute :epistomic/investigation}
+  {:db/ident :epistomic.investigation/end
+   :db/valueType :db.type/instant
+   :db/cardinality :db.cardinality/one
+   :db/doc "When the investigation ended"
+   :epistomic/_attribute :epistomic/investigation}
+  {:db/ident :epistomic.investigation/observation
+   :db/valueType :db.type/ref
+   :db/cardinality :db.cardinality/many
+   :db/doc "An observation of this investigation"
+   :epistomic/_attribute :epistomic/investigation
+   :epistomic.object/class :epistomic/observation}]]
